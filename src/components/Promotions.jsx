@@ -1,23 +1,20 @@
-// src/components/Promotions.jsx
-import React from "react";
-
 export default function Promotions() {
   const promos = [
-    { title: "20% off Lagos → London" },
-    { title: "15% off Abuja → Dubai" },
-    { title: "25% off Lagos → New York" },
+    "20% off Lagos → London",
+    "Flash Sale: Abuja → Dubai",
+    "Spring Special: Lagos → New York",
   ];
 
   return (
-    <div className="mt-10">
-      <h2 className="text-xl font-bold mb-4">Latest Promotions</h2>
-      <div className="flex gap-4">
-        {promos.map((promo, idx) => (
+    <div className="max-w-4xl mx-auto mt-10 p-6 rounded-2xl bg-orange-50 shadow-md">
+      <h2 className="text-xl font-bold text-orange-600 mb-4">Promotions</h2>
+      <div className="flex overflow-x-auto gap-4">
+        {promos.map((promo, i) => (
           <div
-            key={idx}
-            className="min-w-[250px] bg-white border border-gray-200 shadow-sm rounded-2xl p-4 flex-shrink-0"
+            key={i}
+            className="flex-none bg-orange-100 text-orange-700 px-6 py-4 rounded-2xl font-medium shadow hover:bg-orange-200 transition"
           >
-            <p className="font-semibold">{promo.title}</p>
+            {promo}
           </div>
         ))}
       </div>

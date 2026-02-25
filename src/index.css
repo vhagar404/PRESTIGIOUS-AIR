@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --color-primary: #0ea5e9;    /* Sky Blue */
-  --color-secondary: #f97316;  /* Orange */
-  --color-accent: #22c55e;     /* Green */
-  --color-dark: #0f172a;       /* Navy */
+  --primary: #0ea5e9;      /* sky blue */
+  --secondary: #f97316;    /* orange */
+  --accent: #22c55e;       /* green */
+  --dark: #0f172a;         /* navy */
+}
+
+body {
+  @apply bg-slate-50 text-slate-800;
 }
