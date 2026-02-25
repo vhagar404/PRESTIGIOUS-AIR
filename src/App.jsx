@@ -1,13 +1,16 @@
 import Navbar from "./layout/Navbar";
+import FlightSearch from "./components/FlightSearch";
+import Promotions from "./components/Promotions";
+import PopularRoutes from "./components/PopularRoutes";
 
 function App() {
   return (
     <>
       <Navbar />
-      <main className="p-10">
-        <h1 className="text-2xl font-bold">
-          Welcome to Prestigious Air
-        </h1>
+      <main className="p-6 md:p-10">
+        <FlightSearch />
+        <Promotions />
+        <PopularRoutes />
       </main>
     </>
   );
