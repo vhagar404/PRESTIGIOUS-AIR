@@ -1,10 +1,15 @@
+import Navbar from "./layout/Navbar";
+
 function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <h1 className="text-3xl font-bold text-primary">
-        Prestigious Air ✈️ Tailwind Working
-      </h1>
-    </div>
+    <>
+      <Navbar />
+      <main className="p-10">
+        <h1 className="text-2xl font-bold">
+          Welcome to Prestigious Air
+        </h1>
+      </main>
+    </>
   );
 }
 
