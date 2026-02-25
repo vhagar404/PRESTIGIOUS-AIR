@@ -1,3 +1,8 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+:root {
+  --color-primary: #0ea5e9;    /* Sky Blue */
+  --color-secondary: #f97316;  /* Orange */
+  --color-accent: #22c55e;     /* Green */
+  --color-dark: #0f172a;       /* Navy */
+}
