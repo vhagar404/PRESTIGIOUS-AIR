@@ -1,9 +1,9 @@
-import { FaBaggageClaim, FaUtensils, FaCouch, FaShieldAlt } from "react-icons/fa";
+import { FaSuitcaseRolling, FaUtensils, FaChair, FaShieldAlt } from "react-icons/fa";
 
 const extras = [
-  { name: "Extra Baggage", icon: <FaBaggageClaim />, price: "$50" },
+  { name: "Extra Baggage", icon: <FaSuitcaseRolling />, price: "$50" },
   { name: "Meal", icon: <FaUtensils />, price: "$20" },
-  { name: "Lounge Access", icon: <FaCouch />, price: "$30" },
+  { name: "Lounge Access", icon: <FaChair />, price: "$30" },
   { name: "Travel Insurance", icon: <FaShieldAlt />, price: "$15" },
 ];
 
