@@ -1,57 +1,65 @@
 import { FaPlane, FaSuitcase } from "react-icons/fa";
 
-const flights = [
-  { airline: "Prestigious Air", from: "Lagos", to: "London", depart: "08:00", arrive: "14:00", duration: "6h", stops: "Non-stop", price: 450 },
-  { airline: "Prestigious Air", from: "Abuja", to: "Dubai", depart: "09:30", arrive: "15:30", duration: "6h", stops: "1 stop", price: 400 },
-  { airline: "Prestigious Air", from: "Lagos", to: "New York", depart: "12:00", arrive: "20:00", duration: "8h", stops: "Non-stop", price: 550 },
-];
+// Example distance map (in arbitrary km units) for pricing
+const distances = {
+  "Lagos-London": 5100,
+  "Lagos-New York": 9300,
+  "Abuja-Dubai": 4800,
+  "Paris-Tokyo": 9700,
+  "London-Dubai": 5500,
+  // Add more as needed
+};
 
 export default function FlightResults({ booking, setBooking }) {
   if (!booking.from || !booking.to) return null;
 
-  // Filter flights based on search input
-  const availableFlights = flights.filter(
-    (f) =>
-      f.from.toLowerCase() === booking.from.toLowerCase() &&
-      f.to.toLowerCase() === booking.to.toLowerCase()
-  );
+  // Generate a flight dynamically based on selection
+  const routeKey = `${booking.from}-${booking.to}`;
+  const distance = distances[routeKey] || Math.floor(4000 + Math.random() * 6000); // default if unknown
 
-  function selectFlight(flight) {
-    setBooking({ ...booking, flight, from: flight.from, to: flight.to });
+  const flightPrice = Math.round(distance / 10); // simple price formula: 1$/10km
+
+  const flight = {
+    airline: "Goodluck Airlines",
+    from: booking.from,
+    to: booking.to,
+    depart: "08:00",
+    arrive: "14:00",
+    duration: `${Math.ceil(distance / 800)}h`, // assuming avg 800 km/h flight speed
+    stops: distance > 6000 ? "1 stop" : "Non-stop",
+    price: flightPrice,
+  };
+
+  function selectFlight(f) {
+    setBooking({ ...booking, flight: f });
   }
 
   return (
     <div className="max-w-5xl mx-auto mt-10">
       <h2 className="text-xl font-bold text-orange-600 mb-4">Available Flights</h2>
 
-      {availableFlights.length === 0 && <p className="text-gray-500">No flights found. Try another route.</p>}
-
-      <div className="space-y-4">
-        {availableFlights.map((flight, i) => (
-          <div
-            key={i}
-            onClick={() => selectFlight(flight)}
-            className={`flex flex-col sm:flex-row justify-between items-center p-4 rounded-2xl bg-white shadow hover:shadow-lg transition cursor-pointer ${
-              booking.flight?.from === flight.from && booking.flight?.to === flight.to
-                ? "border-2 border-orange-600"
-                : ""
-            }`}
-          >
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <div className="flex items-center gap-2 font-bold text-gray-700">
-                <FaPlane className="text-orange-600" /> {flight.airline}
-              </div>
-              <div className="text-gray-600">
-                {flight.from} → {flight.to} ({flight.stops})
-              </div>
-              <div className="text-gray-500">{flight.duration}</div>
-              <div className="flex items-center gap-1 text-gray-500">
-                <FaSuitcase /> Baggage included
-              </div>
-            </div>
-            <div className="text-orange-600 font-bold text-lg">${flight.price}</div>
+      <div
+        onClick={() => selectFlight(flight)}
+        className={`flex flex-col sm:flex-row justify-between items-center p-4 rounded-2xl bg-white shadow hover:shadow-lg transition cursor-pointer ${
+          booking.flight?.from === flight.from &&
+          booking.flight?.to === flight.to
+            ? "border-2 border-orange-600"
+            : ""
+        }`}
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex items-center gap-2 font-bold text-gray-700">
+            <FaPlane className="text-orange-600" /> {flight.airline}
           </div>
-        ))}
+          <div className="text-gray-600">
+            {flight.from} → {flight.to} ({flight.stops})
+          </div>
+          <div className="text-gray-500">{flight.duration}</div>
+          <div className="flex items-center gap-1 text-gray-500">
+            <FaSuitcase /> Baggage included
+          </div>
+        </div>
+        <div className="text-orange-600 font-bold text-lg">${flight.price}</div>
       </div>
     </div>
   );
