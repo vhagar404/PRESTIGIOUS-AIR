@@ -1,33 +1,17 @@
 export default function ReviewConfirmation({ booking }) {
   if (!booking) return null;
 
-  // Generate dynamic booking reference
   const bookingRef = `PA${Math.floor(10000000 + Math.random() * 90000000)}`;
 
-  // Flight price (0 if not selected)
   const flightPrice = booking.flight?.price || 0;
-
-  // Extras price (sum of selected extras)
-  const extrasPrice =
-    booking.extras?.reduce((sum, e) => sum + Number(e.price || 0), 0) || 0;
-
-  // Total price = (flight × number of travellers) + extras
-  const totalPrice =
-    flightPrice * (booking.travellers?.length || 1) + extrasPrice;
+  const extrasPrice = booking.extras?.reduce((sum, e) => sum + Number(e.price || 0), 0) || 0;
+  const totalPrice = flightPrice * (booking.travellers?.length || 1) + extrasPrice;
 
   function handleConfirm() {
-    // Check if a flight is selected
-    if (!booking.flight || !booking.flight.from || !booking.flight.to)
-      return alert("Please select a flight route.");
-
-    // Check if passenger details are entered
-    if (!booking.travellers || booking.travellers.length === 0)
-      return alert("Please enter passenger details.");
-
-    // Check payment method
+    if (!booking.flight) return alert("Please select a flight.");
+    if (!booking.travellers || booking.travellers.length === 0) return alert("Please enter passenger details.");
     if (!booking.payment) return alert("Please select a payment method.");
 
-    // Payment details validation
     const method = booking.payment;
     const details = booking.paymentDetails || {};
     if (method === "PayPal") {
@@ -37,52 +21,40 @@ export default function ReviewConfirmation({ booking }) {
         return alert("Please complete all card details.");
     }
 
-    // Mock payment success
-    alert(
-      `Payment successful!\nBooking Reference: ${bookingRef}\nTotal: $${totalPrice}`
-    );
+    alert(`Payment successful!\nBooking Reference: ${bookingRef}\nTotal: $${totalPrice}`);
   }
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 rounded-2xl bg-orange-50 shadow-md">
-      <h2 className="text-xl font-bold text-orange-600 mb-4">
-        Review & Confirmation
-      </h2>
+      <h2 className="text-xl font-bold text-orange-600 mb-4">Review & Confirmation</h2>
 
       <div className="bg-white p-4 rounded-2xl shadow space-y-4">
         <p>
-          Booking Reference:{" "}
-          <span className="font-bold text-orange-600">{bookingRef}</span>
+          Booking Reference: <span className="font-bold text-orange-600">{bookingRef}</span>
         </p>
 
+        {/* User-chosen trip dates */}
         <p>
-          Flight:{" "}
-          <span className="font-semibold">
-            {booking.flight?.from || "—"} → {booking.flight?.to || "—"}
-          </span>
+          Trip Dates: <span className="font-semibold">{booking.departure || "—"} → {booking.arrival || "—"}</span>
         </p>
 
-        <p>
-          Departure Date:{" "}
-          <span className="font-semibold">{booking.departure || "—"}</span>
-        </p>
+        {/* Actual flight times */}
+        {booking.flight && (
+          <p>
+            Flight Times: <span className="font-semibold">{booking.flight.depart} → {booking.flight.arrive}</span>
+          </p>
+        )}
 
         <p>
-          Arrival Date:{" "}
-          <span className="font-semibold">{booking.arrival || "—"}</span>
+          Flight: <span className="font-semibold">{booking.flight?.from || "—"} → {booking.flight?.to || "—"}</span>
         </p>
 
         {/* Travellers */}
         <div>
           <h3 className="font-semibold text-gray-700 mb-1">Passengers:</h3>
           {booking.travellers?.map((t, i) => (
-            <div
-              key={i}
-              className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 mb-1 p-2 bg-gray-50 rounded-lg"
-            >
-              <span>
-                {t.name || `Passenger ${i + 1}`} ({t.class})
-              </span>
+            <div key={i} className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 mb-1 p-2 bg-gray-50 rounded-lg">
+              <span>{t.name || `Passenger ${i + 1}`} ({t.class})</span>
               <span className="text-gray-500 text-sm">{t.email || "—"}</span>
             </div>
           ))}
@@ -94,27 +66,23 @@ export default function ReviewConfirmation({ booking }) {
             <h3 className="font-semibold text-gray-700 mb-1">Extras:</h3>
             <ul className="list-disc list-inside">
               {booking.extras.map((e, i) => (
-                <li key={i}>
-                  {e.name} (${e.price})
-                </li>
+                <li key={i}>{e.name} (${e.price})</li>
               ))}
             </ul>
           </div>
         )}
 
-        {/* Payment method */}
+        {/* Payment */}
         {booking.payment && (
           <p>
             Payment Method: <span className="font-semibold">{booking.payment}</span>
           </p>
         )}
 
-        {/* Total */}
         <p className="mt-2 font-semibold">
           Total Price: <span className="font-bold text-orange-600">${totalPrice}</span>
         </p>
 
-        {/* Confirm & Pay */}
         <button
           onClick={handleConfirm}
           className="mt-4 w-full bg-orange-600 text-white py-2 rounded-lg font-bold hover:bg-orange-700 transition"

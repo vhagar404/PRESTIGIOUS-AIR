@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FiSend, FiMapPin, FiCalendar } from "react-icons/fi";
 
-// Countries and cities (expand as needed)
+// Countries and cities (expandable)
 const countries = [
   { name: "Nigeria", cities: ["Lagos", "Abuja", "Port Harcourt"] },
   { name: "United States", cities: ["New York", "Los Angeles", "Chicago"] },
@@ -29,9 +29,10 @@ export default function FlightSearch({ booking, setBooking }) {
       ...booking,
       travellers,
       class: travelClass,
+      // From/To country & city already stored in booking
     });
 
-    // Could trigger flight results here
+    // FlightResults component will now generate dynamic flight
   }
 
   return (
@@ -53,7 +54,7 @@ export default function FlightSearch({ booking, setBooking }) {
         ))}
       </div>
 
-      {/* Country & City Inputs */}
+      {/* Country & City Selection */}
       <div className="grid md:grid-cols-4 gap-4 mb-4">
         {/* From Country */}
         <div className="flex flex-col">
@@ -64,7 +65,7 @@ export default function FlightSearch({ booking, setBooking }) {
               setBooking({
                 ...booking,
                 fromCountry: e.target.value,
-                fromCity: "", // reset city when country changes
+                fromCity: "",
               })
             }
             className="w-full p-2 border border-gray-200 rounded-lg outline-none"
@@ -167,7 +168,7 @@ export default function FlightSearch({ booking, setBooking }) {
         </div>
       </div>
 
-      {/* Travellers & Class Selection */}
+      {/* Travellers & Class */}
       <div className="flex flex-col sm:flex-row gap-4 mb-6 border rounded-lg px-3 py-2">
         <div className="flex-1">
           <label className="font-medium text-gray-700 mb-1 block">Travellers</label>
@@ -203,8 +204,7 @@ export default function FlightSearch({ booking, setBooking }) {
         onClick={handleSearch}
         className="w-full bg-orange-600 text-white py-3 rounded-lg flex items-center justify-center gap-2 font-bold hover:bg-orange-700 transition"
       >
-        <FiSend size={20} />
-        Search Flights
+        <FiSend size={20} /> Search Flights
       </button>
     </div>
   );
