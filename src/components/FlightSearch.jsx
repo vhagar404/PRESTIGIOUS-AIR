@@ -1,27 +1,43 @@
 import { useState } from "react";
-import { FiSend, FiMapPin, FiCalendar, FiUser } from "react-icons/fi";
+import { FiSend, FiMapPin, FiCalendar } from "react-icons/fi";
 
-// Example airports data per country
-const airportsByCountry = {
-  Nigeria: ["Lagos", "Abuja", "Port Harcourt"],
-  UK: ["London", "Manchester", "Edinburgh"],
-  USA: ["New York", "Los Angeles", "Chicago"],
-  UAE: ["Dubai", "Abu Dhabi"],
-  France: ["Paris", "Nice", "Lyon"],
-};
+// Countries and cities (expand as needed)
+const countries = [
+  { name: "Nigeria", cities: ["Lagos", "Abuja", "Port Harcourt"] },
+  { name: "United States", cities: ["New York", "Los Angeles", "Chicago"] },
+  { name: "United Kingdom", cities: ["London", "Manchester", "Birmingham"] },
+  { name: "UAE", cities: ["Dubai", "Abu Dhabi", "Sharjah"] },
+  { name: "India", cities: ["Mumbai", "Delhi", "Bangalore"] },
+  { name: "Germany", cities: ["Berlin", "Munich", "Frankfurt"] },
+  // Add more countries/cities as needed
+];
 
 export default function FlightSearch({ booking, setBooking }) {
   const [tripType, setTripType] = useState("round-trip");
-  const [fromCountry, setFromCountry] = useState("");
-  const [toCountry, setToCountry] = useState("");
+  const [travellersCount, setTravellersCount] = useState(1);
+  const [travelClass, setTravelClass] = useState("Economy");
 
-  const fromCities = fromCountry ? airportsByCountry[fromCountry] : [];
-  const toCities = toCountry ? airportsByCountry[toCountry] : [];
+  function handleSearch() {
+    // Initialize travellers array
+    const travellers = Array.from({ length: travellersCount }, (_, i) => ({
+      name: "",
+      email: "",
+      class: travelClass,
+    }));
+
+    setBooking({
+      ...booking,
+      travellers,
+      class: travelClass,
+    });
+
+    // Could trigger flight results here
+  }
 
   return (
     <div className="max-w-4xl mx-auto bg-white border border-gray-200 shadow-sm rounded-2xl p-6 mt-10">
       {/* Trip Type Tabs */}
-      <div className="flex space-x-4 mb-6">
+      <div className="flex space-x-4 mb-4">
         {["one-way", "round-trip", "multi-city"].map((type) => (
           <button
             key={type}
@@ -37,118 +53,154 @@ export default function FlightSearch({ booking, setBooking }) {
         ))}
       </div>
 
-      {/* Country Selection */}
-      <div className="grid md:grid-cols-2 gap-4 mb-6">
-        <select
-          value={fromCountry}
-          onChange={(e) => {
-            setFromCountry(e.target.value);
-            setBooking({ ...booking, from: "" }); // reset city when country changes
-          }}
-          className="border rounded-lg px-3 py-2 w-full"
-        >
-          <option value="">Select Departure Country</option>
-          {Object.keys(airportsByCountry).map((country) => (
-            <option key={country} value={country}>{country}</option>
-          ))}
-        </select>
+      {/* Country & City Inputs */}
+      <div className="grid md:grid-cols-4 gap-4 mb-4">
+        {/* From Country */}
+        <div className="flex flex-col">
+          <label className="text-sm font-medium mb-1">From Country</label>
+          <select
+            value={booking.fromCountry || ""}
+            onChange={(e) =>
+              setBooking({
+                ...booking,
+                fromCountry: e.target.value,
+                fromCity: "", // reset city when country changes
+              })
+            }
+            className="w-full p-2 border border-gray-200 rounded-lg outline-none"
+          >
+            <option value="">Select Country</option>
+            {countries.map((c) => (
+              <option key={c.name} value={c.name}>
+                {c.name}
+              </option>
+            ))}
+          </select>
 
-        <select
-          value={toCountry}
-          onChange={(e) => {
-            setToCountry(e.target.value);
-            setBooking({ ...booking, to: "" }); // reset city when country changes
-          }}
-          className="border rounded-lg px-3 py-2 w-full"
-        >
-          <option value="">Select Destination Country</option>
-          {Object.keys(airportsByCountry).map((country) => (
-            <option key={country} value={country}>{country}</option>
-          ))}
-        </select>
-      </div>
+          <label className="text-sm font-medium mb-1 mt-2">From City</label>
+          <select
+            value={booking.fromCity || ""}
+            onChange={(e) =>
+              setBooking({ ...booking, fromCity: e.target.value })
+            }
+            disabled={!booking.fromCountry}
+            className="w-full p-2 border border-gray-200 rounded-lg outline-none"
+          >
+            <option value="">Select City</option>
+            {countries
+              .find((c) => c.name === booking.fromCountry)
+              ?.cities.map((city) => (
+                <option key={city} value={city}>
+                  {city}
+                </option>
+              ))}
+          </select>
+        </div>
 
-      {/* City Selection */}
-      <div className="grid md:grid-cols-2 gap-4 mb-6">
-        <select
-          value={booking.from}
-          onChange={(e) => setBooking({ ...booking, from: e.target.value })}
-          className="border rounded-lg px-3 py-2 w-full"
-          disabled={!fromCountry}
-        >
-          <option value="">Select Departure City</option>
-          {fromCities.map((city) => (
-            <option key={city} value={city}>{city}</option>
-          ))}
-        </select>
+        {/* To Country */}
+        <div className="flex flex-col">
+          <label className="text-sm font-medium mb-1">To Country</label>
+          <select
+            value={booking.toCountry || ""}
+            onChange={(e) =>
+              setBooking({
+                ...booking,
+                toCountry: e.target.value,
+                toCity: "",
+              })
+            }
+            className="w-full p-2 border border-gray-200 rounded-lg outline-none"
+          >
+            <option value="">Select Country</option>
+            {countries.map((c) => (
+              <option key={c.name} value={c.name}>
+                {c.name}
+              </option>
+            ))}
+          </select>
 
-        <select
-          value={booking.to}
-          onChange={(e) => setBooking({ ...booking, to: e.target.value })}
-          className="border rounded-lg px-3 py-2 w-full"
-          disabled={!toCountry}
-        >
-          <option value="">Select Destination City</option>
-          {toCities.map((city) => (
-            <option key={city} value={city}>{city}</option>
-          ))}
-        </select>
-      </div>
+          <label className="text-sm font-medium mb-1 mt-2">To City</label>
+          <select
+            value={booking.toCity || ""}
+            onChange={(e) =>
+              setBooking({ ...booking, toCity: e.target.value })
+            }
+            disabled={!booking.toCountry}
+            className="w-full p-2 border border-gray-200 rounded-lg outline-none"
+          >
+            <option value="">Select City</option>
+            {countries
+              .find((c) => c.name === booking.toCountry)
+              ?.cities.map((city) => (
+                <option key={city} value={city}>
+                  {city}
+                </option>
+              ))}
+          </select>
+        </div>
 
-      {/* Departure & Return */}
-      <div className="grid md:grid-cols-4 gap-4 mb-6">
-        <div className="flex items-center border rounded-lg px-3 py-2">
-          <FiCalendar className="mr-2 text-gray-400" />
+        {/* Departure */}
+        <div className="flex flex-col">
+          <label className="text-sm font-medium mb-1">Departure</label>
           <input
             type="date"
-            className="w-full outline-none"
             value={booking.departure || ""}
             onChange={(e) =>
               setBooking({ ...booking, departure: e.target.value })
             }
+            className="w-full p-2 border border-gray-200 rounded-lg outline-none"
           />
         </div>
 
-        <div className="flex items-center border rounded-lg px-3 py-2">
-          <FiCalendar className="mr-2 text-gray-400" />
+        {/* Return */}
+        <div className="flex flex-col">
+          <label className="text-sm font-medium mb-1">Return</label>
           <input
             type="date"
-            className="w-full outline-none"
             value={booking.arrival || ""}
             onChange={(e) =>
               setBooking({ ...booking, arrival: e.target.value })
             }
             disabled={tripType === "one-way"}
+            className="w-full p-2 border border-gray-200 rounded-lg outline-none"
           />
         </div>
       </div>
 
-      {/* Passengers & Class */}
-      <div className="flex items-center gap-4 mb-6 border rounded-lg px-3 py-2">
-        <FiUser className="text-gray-400" />
-        <select
-          className="w-full outline-none"
-          value={booking.travellers?.length || 1}
-          onChange={(e) =>
-            setBooking({
-              ...booking,
-              travellers: Array.from({ length: Number(e.target.value) }, (_, i) => ({
-                name: "",
-                email: "",
-                class: "Economy",
-              })),
-            })
-          }
-        >
-          <option value={1}>1 Adult</option>
-          <option value={2}>2 Adults</option>
-          <option value={3}>3 Adults</option>
-        </select>
+      {/* Travellers & Class Selection */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6 border rounded-lg px-3 py-2">
+        <div className="flex-1">
+          <label className="font-medium text-gray-700 mb-1 block">Travellers</label>
+          <select
+            value={travellersCount}
+            onChange={(e) => setTravellersCount(Number(e.target.value))}
+            className="w-full p-2 border border-gray-200 rounded-lg outline-none"
+          >
+            {Array.from({ length: 10 }, (_, i) => (
+              <option key={i} value={i + 1}>
+                {i + 1} {i === 0 ? "Traveller" : "Travellers"}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex-1">
+          <label className="font-medium text-gray-700 mb-1 block">Class</label>
+          <select
+            value={travelClass}
+            onChange={(e) => setTravelClass(e.target.value)}
+            className="w-full p-2 border border-gray-200 rounded-lg outline-none"
+          >
+            <option>Economy</option>
+            <option>Business</option>
+            <option>First</option>
+          </select>
+        </div>
       </div>
 
       {/* Search Flights Button */}
       <button
-        onClick={() => {}}
+        onClick={handleSearch}
         className="w-full bg-orange-600 text-white py-3 rounded-lg flex items-center justify-center gap-2 font-bold hover:bg-orange-700 transition"
       >
         <FiSend size={20} />

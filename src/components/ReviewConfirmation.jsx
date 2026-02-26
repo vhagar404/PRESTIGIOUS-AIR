@@ -7,7 +7,7 @@ export default function ReviewConfirmation({ booking }) {
   // Flight price (0 if not selected)
   const flightPrice = booking.flight?.price || 0;
 
-  // Extras price
+  // Extras price (sum of selected extras)
   const extrasPrice =
     booking.extras?.reduce((sum, e) => sum + Number(e.price || 0), 0) || 0;
 
@@ -16,10 +16,15 @@ export default function ReviewConfirmation({ booking }) {
     flightPrice * (booking.travellers?.length || 1) + extrasPrice;
 
   function handleConfirm() {
-    // Basic validations
-    if (!booking.from || !booking.to) return alert("Please select a flight route.");
+    // Check if a flight is selected
+    if (!booking.flight || !booking.flight.from || !booking.flight.to)
+      return alert("Please select a flight route.");
+
+    // Check if passenger details are entered
     if (!booking.travellers || booking.travellers.length === 0)
       return alert("Please enter passenger details.");
+
+    // Check payment method
     if (!booking.payment) return alert("Please select a payment method.");
 
     // Payment details validation
@@ -53,7 +58,7 @@ export default function ReviewConfirmation({ booking }) {
         <p>
           Flight:{" "}
           <span className="font-semibold">
-            {booking.from || "—"} → {booking.to || "—"}
+            {booking.flight?.from || "—"} → {booking.flight?.to || "—"}
           </span>
         </p>
 
@@ -100,15 +105,13 @@ export default function ReviewConfirmation({ booking }) {
         {/* Payment method */}
         {booking.payment && (
           <p>
-            Payment Method:{" "}
-            <span className="font-semibold">{booking.payment}</span>
+            Payment Method: <span className="font-semibold">{booking.payment}</span>
           </p>
         )}
 
         {/* Total */}
         <p className="mt-2 font-semibold">
-          Total Price:{" "}
-          <span className="font-bold text-orange-600">${totalPrice}</span>
+          Total Price: <span className="font-bold text-orange-600">${totalPrice}</span>
         </p>
 
         {/* Confirm & Pay */}

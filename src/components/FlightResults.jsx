@@ -1,33 +1,39 @@
 import { FaPlane, FaSuitcase } from "react-icons/fa";
 
-// Example distance map (in arbitrary km units) for pricing
+// Example distances (in km) for some known city pairs; unknown pairs get random distance
 const distances = {
   "Lagos-London": 5100,
   "Lagos-New York": 9300,
   "Abuja-Dubai": 4800,
   "Paris-Tokyo": 9700,
   "London-Dubai": 5500,
-  // Add more as needed
+  "New York-London": 5600,
+  "Dubai-Mumbai": 2000,
+  "Berlin-Paris": 1050,
+  // Add more if desired
 };
 
+// Simple function to compute flight price based on distance
+function computePrice(distance) {
+  return Math.round(distance / 10); // $1 per 10km
+}
+
 export default function FlightResults({ booking, setBooking }) {
-  if (!booking.from || !booking.to) return null;
+  if (!booking.fromCity || !booking.toCity) return null;
 
-  // Generate a flight dynamically based on selection
-  const routeKey = `${booking.from}-${booking.to}`;
-  const distance = distances[routeKey] || Math.floor(4000 + Math.random() * 6000); // default if unknown
-
-  const flightPrice = Math.round(distance / 10); // simple price formula: 1$/10km
+  const routeKey = `${booking.fromCity}-${booking.toCity}`;
+  const distance =
+    distances[routeKey] || Math.floor(4000 + Math.random() * 6000); // default if unknown
 
   const flight = {
-    airline: "Goodluck Airlines",
-    from: booking.from,
-    to: booking.to,
+    airline: "Prestigious Air",
+    from: booking.fromCity,
+    to: booking.toCity,
     depart: "08:00",
     arrive: "14:00",
-    duration: `${Math.ceil(distance / 800)}h`, // assuming avg 800 km/h flight speed
+    duration: `${Math.ceil(distance / 800)}h`, // avg speed ~800 km/h
     stops: distance > 6000 ? "1 stop" : "Non-stop",
-    price: flightPrice,
+    price: computePrice(distance),
   };
 
   function selectFlight(f) {
