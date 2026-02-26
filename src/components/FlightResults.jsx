@@ -1,22 +1,36 @@
 import { FaPlane, FaSuitcase } from "react-icons/fa";
 
 const flights = [
-  { airline: "Prestigious Air", from: "Lagos", to: "London", depart: "08:00", arrive: "14:00", duration: "6h", stops: "Non-stop", price: "$450" },
-  { airline: "Prestigious Air", from: "Abuja", to: "Dubai", depart: "09:30", arrive: "15:30", duration: "6h", stops: "1 stop", price: "$400" },
-  { airline: "Prestigious Air", from: "Lagos", to: "New York", depart: "12:00", arrive: "20:00", duration: "8h", stops: "Non-stop", price: "$550" },
+  { airline: "Prestigious Air", from: "Lagos", to: "London", depart: "08:00", arrive: "14:00", duration: "6h", stops: "Non-stop", price: 450 },
+  { airline: "Prestigious Air", from: "Abuja", to: "Dubai", depart: "09:30", arrive: "15:30", duration: "6h", stops: "1 stop", price: 400 },
+  { airline: "Prestigious Air", from: "Lagos", to: "New York", depart: "12:00", arrive: "20:00", duration: "8h", stops: "Non-stop", price: 550 },
 ];
 
-export default function FlightResults() {
+export default function FlightResults({ booking, setBooking }) {
+  // Filter flights based on search
+  const availableFlights = flights.filter(
+    (f) => f.from.toLowerCase() === booking.from.toLowerCase() &&
+           f.to.toLowerCase() === booking.to.toLowerCase()
+  );
+
+  function selectFlight(flight) {
+    setBooking({ ...booking, flight, from: flight.from, to: flight.to });
+  }
+
+  if (!booking.from || !booking.to) return null;
+
   return (
     <div className="max-w-5xl mx-auto mt-10">
       <h2 className="text-xl font-bold text-orange-600 mb-4">Available Flights</h2>
+      {availableFlights.length === 0 && <p>No flights found. Try another route.</p>}
       <div className="space-y-4">
-        {flights.map((flight, i) => (
+        {availableFlights.map((flight, i) => (
           <div
             key={i}
-            className="flex justify-between items-center p-4 rounded-2xl bg-white shadow hover:shadow-lg transition cursor-pointer"
+            onClick={() => selectFlight(flight)}
+            className="flex flex-col sm:flex-row justify-between items-center p-4 rounded-2xl bg-white shadow hover:shadow-lg transition cursor-pointer"
           >
-            <div className="flex flex-col md:flex-row md:items-center gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex items-center gap-2 font-bold text-gray-700">
                 <FaPlane className="text-orange-600" /> {flight.airline}
               </div>
@@ -28,7 +42,7 @@ export default function FlightResults() {
                 <FaSuitcase /> Baggage included
               </div>
             </div>
-            <div className="text-orange-600 font-bold text-lg">{flight.price}</div>
+            <div className="text-orange-600 font-bold text-lg">${flight.price}</div>
           </div>
         ))}
       </div>
