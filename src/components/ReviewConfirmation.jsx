@@ -1,45 +1,62 @@
 export default function ReviewConfirmation({ booking }) {
   if (!booking) return null;
 
-  // Generate random booking reference
+  // Dynamic booking reference
   const bookingRef = `PA${Math.floor(10000000 + Math.random() * 90000000)}`;
 
-  const flightPrice = booking.flight?.price || 0;
-  const extrasPrice = booking.extras?.reduce((sum, e) => sum + e.price, 0) || 0;
-  const totalPrice = flightPrice * (booking.travellers?.length || 1) + extrasPrice;
+  // Determine number of travellers safely
+  const numTravellers = Array.isArray(booking.travellers)
+    ? booking.travellers.length
+    : booking.travellers || 1;
+
+  // Flight price (ensure it's a number)
+  const flightPrice = booking.flight?.price ? Number(booking.flight.price) : 0;
+
+  // Extras total
+  const extrasPrice =
+    booking.extras?.reduce((sum, e) => sum + Number(e.price || 0), 0) || 0;
+
+  // Total = flight price × travellers + extras
+  const totalPrice = flightPrice * numTravellers + extrasPrice;
 
   function handleConfirm() {
-    // Validation
-    if (!booking.from || !booking.to) return alert("Please select a flight route.");
-    if (!booking.travellers || booking.travellers.length === 0)
+    if (!booking.flight) return alert("Please select a flight.");
+    if (!numTravellers || numTravellers === 0)
       return alert("Please enter passenger details.");
     if (!booking.payment) return alert("Please select a payment method.");
 
-    // Payment details validation
+    // Payment validation
     const method = booking.payment;
     const details = booking.paymentDetails || {};
     if (method === "PayPal") {
-      if (!details.email) return alert("Please enter your PayPal email.");
+      if (!details.email) return alert("Enter PayPal email.");
     } else {
       if (!details.name || !details.cardNumber || !details.expiry || !details.cvv)
-        return alert("Please complete all card details.");
+        return alert("Complete card details.");
     }
 
-    // Mock payment success
-    alert(`Payment successful!\nBooking Reference: ${bookingRef}\nTotal: $${totalPrice}`);
+    alert(
+      `Payment successful!\nBooking Reference: ${bookingRef}\nTotal: $${totalPrice}`
+    );
   }
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 rounded-2xl bg-orange-50 shadow-md">
-      <h2 className="text-xl font-bold text-orange-600 mb-4">Review & Confirmation</h2>
+      <h2 className="text-xl font-bold text-orange-600 mb-4">
+        Review & Confirmation
+      </h2>
 
       <div className="bg-white p-4 rounded-2xl shadow space-y-4">
         <p>
-          Booking Reference: <span className="font-bold text-orange-600">{bookingRef}</span>
+          Booking Reference:{" "}
+          <span className="font-bold text-orange-600">{bookingRef}</span>
         </p>
 
         <p>
-          Flight: <span className="font-semibold">{booking.from || "—"} → {booking.to || "—"}</span>
+          Flight:{" "}
+          <span className="font-semibold">
+            {booking.from || "—"} → {booking.to || "—"}
+          </span>
         </p>
 
         <p>
@@ -53,15 +70,20 @@ export default function ReviewConfirmation({ booking }) {
         {/* Travellers */}
         <div>
           <h3 className="font-semibold text-gray-700 mb-1">Passengers:</h3>
-          {booking.travellers?.map((t, i) => (
-            <div
-              key={i}
-              className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 mb-1 p-2 bg-gray-50 rounded-lg"
-            >
-              <span>{t.name || `Passenger ${i + 1}`} ({t.class})</span>
-              <span className="text-gray-500 text-sm">{t.email || "—"}</span>
-            </div>
-          ))}
+          {Array.isArray(booking.travellers)
+            ? booking.travellers.map((t, i) => (
+                <div
+                  key={i}
+                  className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 mb-1 p-2 bg-gray-50 rounded-lg"
+                >
+                  <span>
+                    {t.name || `Passenger ${i + 1}`} ({t.class})
+                  </span>
+                  <span className="text-gray-500 text-sm">{t.email || "—"}</span>
+                </div>
+              ))
+            : <div className="p-2 bg-gray-50 rounded-lg">{numTravellers} Passenger(s)</div>
+          }
         </div>
 
         {/* Extras */}
@@ -70,22 +92,25 @@ export default function ReviewConfirmation({ booking }) {
             <h3 className="font-semibold text-gray-700 mb-1">Extras:</h3>
             <ul className="list-disc list-inside">
               {booking.extras.map((e, i) => (
-                <li key={i}>{e.name} (${e.price})</li>
+                <li key={i}>
+                  {e.name} (${Number(e.price).toFixed(2)})
+                </li>
               ))}
             </ul>
           </div>
         )}
 
-        {/* Payment method */}
+        {/* Payment */}
         {booking.payment && (
           <p>
             Payment Method: <span className="font-semibold">{booking.payment}</span>
           </p>
         )}
 
-        {/* Total */}
+        {/* Total Price */}
         <p className="mt-2 font-semibold">
-          Total Price: <span className="font-bold text-orange-600">${totalPrice}</span>
+          Total Price:{" "}
+          <span className="font-bold text-orange-600">${totalPrice}</span>
         </p>
 
         {/* Confirm & Pay */}

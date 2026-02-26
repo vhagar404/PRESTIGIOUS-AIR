@@ -7,28 +7,35 @@ const flights = [
 ];
 
 export default function FlightResults({ booking, setBooking }) {
-  // Filter flights based on search
+  if (!booking.from || !booking.to) return null;
+
+  // Filter flights based on search input
   const availableFlights = flights.filter(
-    (f) => f.from.toLowerCase() === booking.from.toLowerCase() &&
-           f.to.toLowerCase() === booking.to.toLowerCase()
+    (f) =>
+      f.from.toLowerCase() === booking.from.toLowerCase() &&
+      f.to.toLowerCase() === booking.to.toLowerCase()
   );
 
   function selectFlight(flight) {
     setBooking({ ...booking, flight, from: flight.from, to: flight.to });
   }
 
-  if (!booking.from || !booking.to) return null;
-
   return (
     <div className="max-w-5xl mx-auto mt-10">
       <h2 className="text-xl font-bold text-orange-600 mb-4">Available Flights</h2>
-      {availableFlights.length === 0 && <p>No flights found. Try another route.</p>}
+
+      {availableFlights.length === 0 && <p className="text-gray-500">No flights found. Try another route.</p>}
+
       <div className="space-y-4">
         {availableFlights.map((flight, i) => (
           <div
             key={i}
             onClick={() => selectFlight(flight)}
-            className="flex flex-col sm:flex-row justify-between items-center p-4 rounded-2xl bg-white shadow hover:shadow-lg transition cursor-pointer"
+            className={`flex flex-col sm:flex-row justify-between items-center p-4 rounded-2xl bg-white shadow hover:shadow-lg transition cursor-pointer ${
+              booking.flight?.from === flight.from && booking.flight?.to === flight.to
+                ? "border-2 border-orange-600"
+                : ""
+            }`}
           >
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex items-center gap-2 font-bold text-gray-700">
