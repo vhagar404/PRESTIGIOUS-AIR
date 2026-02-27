@@ -1,16 +1,62 @@
-# React + Vite
+# Prestigious Air – Flight Booking Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Prestigious Air is a modern flight booking web application that allows users to search flights between cities worldwide, select travellers, add extras, and complete a booking.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Search flights by **country and city**
+- Dynamic flight pricing based on **distance**
+- Traveller selection
+- Class selection (Economy, Business, First)
+- Passenger details form
+- Add-ons such as:
+  - Extra baggage
+  - Meal
+  - Lounge access
+  - Travel insurance
+- Payment method selection (Card / PayPal)
+- Booking confirmation with reference number
+- Mobile responsive design
 
-## React Compiler
+## Built With
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React
+- Vite
+- Tailwind CSS
+- JavaScript
+- React Icons
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Clone the repository:
+
+```
+git clone https://github.com/vhagar404/PRESTIGIOUS-AIR.git
+```
+
+Go into the project folder:
+
+```
+cd prestigious-air
+```
+
+Install dependencies:
+
+```
+npm install
+```
+
+Run the development server:
+
+```
+npm run dev
+```
+
+## Live Demo
+
+https://prestigious-air.vercel.app/
+```
+
+## Author
+
+Goodluck Godspower
